@@ -28,6 +28,7 @@ public class Menu {
     private  String description;
     private BigDecimal price;    // BigDecimal for currency representation, make maths operations easier and more precise
     private String imageUrl;
+    private String imagePublicId;
 
     @ManyToOne
     @JoinColumn(name = "category_id")  // Link to Category entity

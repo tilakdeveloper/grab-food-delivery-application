@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -25,9 +26,10 @@ public class MenuDTO {
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be positive")
-    private Double price;
+    private BigDecimal price;
 
     private String imageUrl;
+    private String imagePublicId;
 
     @NotNull(message = "Category ID is required")
     private Long categoryId;
