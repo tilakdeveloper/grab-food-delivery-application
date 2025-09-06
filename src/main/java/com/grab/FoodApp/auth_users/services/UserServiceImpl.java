@@ -3,12 +3,14 @@ package com.grab.FoodApp.auth_users.services;
 import com.grab.FoodApp.auth_users.dtos.UserDTO;
 import com.grab.FoodApp.auth_users.entity.User;
 import com.grab.FoodApp.auth_users.repository.UserRepository;
+import com.grab.FoodApp.cloudinary.CloudinaryService;
 import com.grab.FoodApp.email_notification.dtos.NotificationDTO;
 import com.grab.FoodApp.email_notification.services.NotificationService;
 import com.grab.FoodApp.exceptions.BadRequestException;
 import com.grab.FoodApp.exceptions.NotFoundException;
 import com.grab.FoodApp.response.Response;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final NotificationService notificationService;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public User getCurrentLoggedInUser() {
@@ -61,23 +66,24 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @SneakyThrows
     @Override
     public Response<?> updateOwnAccount(UserDTO userDTO) {
         User existingUser = getCurrentLoggedInUser();
 
-        String profileUrl = existingUser.getProfileUrl();
+        String profilePublicId = existingUser.getProfilePublicId();
 
         MultipartFile imageFile = userDTO.getImageFile();
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            if (profileUrl != null && !profileUrl.isEmpty()) {
-                // Delete the old image from cloud storage
+            if (profilePublicId != null && !profilePublicId.isEmpty()) {
+                cloudinaryService.deleteFile(profilePublicId);
             }
 
-            //storage changes
-            // upload new image to cloud storage and get the URL
-            String newProfileUrl = "http://new-image-url.com"; // Replace with actual upload
-            existingUser.setProfileUrl(newProfileUrl);
+            //Upload new image to cloud storage and get the URL and public ID
+            Map<String, String> uploadFileDetails = cloudinaryService.uploadFile(imageFile); // Replace with actual upload
+            existingUser.setProfileUrl(uploadFileDetails.get("url"));
+            existingUser.setProfilePublicId(uploadFileDetails.get("public_id"));
         }
 
         if (userDTO.getName() != null) {
@@ -99,9 +105,6 @@ public class UserServiceImpl implements UserService {
             }
             String oldEmail = existingUser.getEmail();
             existingUser.setEmail(userDTO.getEmail());
-            // Notify user about email change
-            String subject = "Email Change Notification";
-            String body = "Your account email has been changed from " + oldEmail + " to " + userDTO.getEmail();
         }
 
         userRepository.save(existingUser);

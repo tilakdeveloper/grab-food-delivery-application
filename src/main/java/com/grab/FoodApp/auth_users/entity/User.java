@@ -40,6 +40,8 @@ public class User {
 
     private String profileUrl;
 
+    private String profilePublicId;
+
     private String address;
 
     private boolean isActive;

@@ -14,9 +14,9 @@ public class FileController {
     private final CloudinaryService cloudinaryService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> upload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> upload(@RequestParam("imageFile") MultipartFile imageFile) {
         try {
-            Map<String, String> uploadResponse = cloudinaryService.uploadFile(file);
+            Map<String, String> uploadResponse = cloudinaryService.uploadFile(imageFile);
             return ResponseEntity.ok(uploadResponse);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "Upload failed: " + e.getMessage()));
