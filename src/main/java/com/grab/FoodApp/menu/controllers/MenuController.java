@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/menus")
+@RequestMapping("/api/v1/menu")
 public class MenuController {
 
     private final MenuService menuService;
@@ -51,7 +51,7 @@ public class MenuController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<Response<List<MenuDTO>>> getAllMenus(
             @RequestParam(value = "categoryId", required = false) Long categoryId,
             @RequestParam(value = "search", required = false) String search) {

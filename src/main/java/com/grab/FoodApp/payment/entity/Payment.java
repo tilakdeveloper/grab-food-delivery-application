@@ -33,6 +33,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
+    private LocalDateTime paymentDate;
+
     private String  transactionId;
 
     @Enumerated(EnumType.STRING)

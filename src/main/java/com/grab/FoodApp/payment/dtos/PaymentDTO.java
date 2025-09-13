@@ -35,6 +35,6 @@ public class PaymentDTO {
 
     private OrderDTO order;
 
-    private UserDTO usr;
+    private UserDTO user;
 
 }
