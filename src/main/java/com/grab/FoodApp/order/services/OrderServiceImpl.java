@@ -54,8 +54,8 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
 
 
-    @Value("${base.payment.link}")
-    private String basePaymentLink;
+//    @Value("${base.payment.link}")
+//    private String basePaymentLink;
 
 
     @Transactional
@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("model mapper mapped savedOrder to OrderDTO");
 
         // Send email notifications
-        sendOrderConfirmationEmail(customer, orderDTO);
+//        sendOrderConfirmationEmail(customer, orderDTO);
 
 
         log.info("building response to send");
@@ -286,50 +286,50 @@ public class OrderServiceImpl implements OrderService {
 
 
 
-    private void sendOrderConfirmationEmail(User customer, OrderDTO orderDTO){
-
-        String subject =  "Your Order Confirmation - Order #" + orderDTO.getId();
-
-        //create a Thymeleaf contex and set variables. import the context from Thymeleaf
-        Context context = new Context(Locale.getDefault());
-
-        context.setVariable("customerName", customer.getName());
-        context.setVariable("orderId", String.valueOf(orderDTO.getId()));
-        context.setVariable("orderDate", orderDTO.getOrderDate().toString());
-        context.setVariable("totalAmount", orderDTO.getTotalAmount().toString());
-
-        // Format delivery address
-        String deliveryAddress = orderDTO.getUser().getAddress();
-        context.setVariable("deliveryAddress", deliveryAddress);
-
-        context.setVariable("currentYear", java.time.Year.now());
-
-        // Build the order items HTML using StringBuilder
-        StringBuilder orderItemsHtml = new StringBuilder();
-
-        for (OrderItemDTO item : orderDTO.getOrderItems()) {
-            orderItemsHtml.append("<div class=\"order-item\">")
-                    .append("<p>").append(item.getMenu().getName()).append(" x ").append(item.getQuantity()).append("</p>")
-                    .append("<p> $ ").append(item.getSubtotal()).append("</p>")
-                    .append("</div>");
-        }
-
-        context.setVariable("orderItemsHtml", orderItemsHtml.toString());
-        context.setVariable("totalItems", orderDTO.getOrderItems().size());
-
-
-        String paymentLink = basePaymentLink + orderDTO.getId() + "&amount=" + orderDTO.getTotalAmount(); // Replace "yourdomain.com"
-        context.setVariable("paymentLink", paymentLink);
-
-        // Process the Thymeleaf template to generate the HTML email body
-        String emailBody = templateEngine.process("order-confirmation", context);  // "order-confirmation" is the template name
-
-        notificationService.sendEmail(NotificationDTO.builder()
-                .recipient(customer.getEmail())
-                .subject(subject)
-                .body(emailBody)
-                .isHtml(true)
-                .build());
-
-    }
+//    private void sendOrderConfirmationEmail(User customer, OrderDTO orderDTO){
+//
+//        String subject =  "Your Order Confirmation - Order #" + orderDTO.getId();
+//
+//        //create a Thymeleaf contex and set variables. import the context from Thymeleaf
+//        Context context = new Context(Locale.getDefault());
+//
+//        context.setVariable("customerName", customer.getName());
+//        context.setVariable("orderId", String.valueOf(orderDTO.getId()));
+//        context.setVariable("orderDate", orderDTO.getOrderDate().toString());
+//        context.setVariable("totalAmount", orderDTO.getTotalAmount().toString());
+//
+//        // Format delivery address
+//        String deliveryAddress = orderDTO.getUser().getAddress();
+//        context.setVariable("deliveryAddress", deliveryAddress);
+//
+//        context.setVariable("currentYear", java.time.Year.now());
+//
+//        // Build the order items HTML using StringBuilder
+//        StringBuilder orderItemsHtml = new StringBuilder();
+//
+//        for (OrderItemDTO item : orderDTO.getOrderItems()) {
+//            orderItemsHtml.append("<div class=\"order-item\">")
+//                    .append("<p>").append(item.getMenu().getName()).append(" x ").append(item.getQuantity()).append("</p>")
+//                    .append("<p> $ ").append(item.getSubtotal()).append("</p>")
+//                    .append("</div>");
+//        }
+//
+//        context.setVariable("orderItemsHtml", orderItemsHtml.toString());
+//        context.setVariable("totalItems", orderDTO.getOrderItems().size());
+//
+//
+//        String paymentLink = basePaymentLink + orderDTO.getId() + "&amount=" + orderDTO.getTotalAmount(); // Replace later with "domain.com"
+//        context.setVariable("paymentLink", paymentLink);
+//
+//        // Process the Thymeleaf template to generate the HTML email body
+//        String emailBody = templateEngine.process("order-confirmation", context);  // "order-confirmation" is the template name
+//
+//        notificationService.sendEmail(NotificationDTO.builder()
+//                .recipient(customer.getEmail())
+//                .subject(subject)
+//                .body(emailBody)
+//                .isHtml(true)
+//                .build());
+//
+//    }
 }

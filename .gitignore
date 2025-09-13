@@ -33,6 +33,5 @@ build/
 .vscode/
 
 # Ignore application secrets
-src/main/resources/application.properties
-src/main/resources/application-*.properties
+src/main/resources/application-dev.properties
 .env
