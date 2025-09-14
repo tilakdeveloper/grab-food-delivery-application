@@ -27,7 +27,7 @@ public class UserController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @PostMapping(value="/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value="/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Response<?>> updateOwnAccount(@ModelAttribute @Valid UserDTO userDTO,
                                                         @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         userDTO.setImageFile(imageFile);
@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @DeleteMapping("/deaticvate")
+    @DeleteMapping("/deactivate")
     public ResponseEntity<Response<?>> deactivateOwnAccount() {
         Response<?> response = userService.deactivateOwnAccount();
         return ResponseEntity.status(response.getStatusCode()).body(response);
